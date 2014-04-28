@@ -98,20 +98,6 @@ int main(int argc, char *argv[]) {
 			avgFPS = 0;
 		}
 		
-		//render background texture
-		int bW, bH;
-		SDL_QueryTexture(background, NULL, NULL, &bW, &bH);
-		renderTexture(background, renderer, 0, 0);
-		renderTexture(background, renderer, bW, 0);
-		renderTexture(background, renderer, 0, bH);
-		renderTexture(background, renderer, bW, bH);
-
-		//set x & y
-		int iW, iH;
-		SDL_QueryTexture(image, NULL, NULL, &iW, &iH);
-		int x = SCREEN_WIDTH / 2 - iW / 2;
-		int y = SCREEN_HEIGHT / 2 - iH / 2;
-
 		++countedFrames;
 
 		//If frame finished early
@@ -122,8 +108,10 @@ int main(int argc, char *argv[]) {
 		{
 			//Wait remaining time
 			SDL_Delay( SCREEN_TICK_PER_FRAME - frameTicks );
+			// Draw background
+			renderTexture(background, renderer, 0, 0);
 			//draw texture
-			renderTexture(image, renderer, x, imageY);
+			renderTexture(image, renderer, SCREEN_WIDTH / 2, imageY);
 			
 			//render texture
 			SDL_RenderPresent(renderer);
