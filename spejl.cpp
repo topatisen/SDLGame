@@ -13,7 +13,18 @@ const int SCREEN_FPS = 60;
 const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;
 
 
+/*
+ * Log an SDL error
+ * @param os Which strean to log to
+ * @param msg The error message to write, format will be msg error: SDL_GetError()
+ */
 
+/*
+ * Loads a BMP image into a texture rendering device
+ * @param file The BMP image to load
+ * @param ren The rendered to use
+ * @return the loaded texture or nullptr if something went wrong
+ */
 
 int main(int argc, char *argv[]) {
 	SDL_Event e;
