@@ -4,9 +4,7 @@ using namespace std;
 
 //adding timer.h
 #include "timer.h"
-//tjapp
-//tjipp
-//tjopp
+
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 768
 
