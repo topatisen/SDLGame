@@ -5,12 +5,12 @@ using namespace std;
 //adding timer.h
 #include "timer.h"
 
-//HEJ
+
 
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 768
 
-int hej;
+
 
 const int SCREEN_FPS = 60;
 const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;
