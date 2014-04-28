@@ -6,7 +6,7 @@ using namespace std;
 #include "timer.h"
 
 //tjipp
-
+//tjopp
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 768
 
