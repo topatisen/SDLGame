@@ -12,6 +12,7 @@ SDL_Texture *loadTexture(const std::string &file, SDL_Renderer *ren) {
 	SDL_Surface *loadedImage = SDL_LoadBMP(file.c_str());
 
 	if(loadedImage != nullptr) {
+		SDL_SetColorKey(loadedImage,true,SDL_MapRGB(loadedImage->format,255,0,255));
 		texture = SDL_CreateTextureFromSurface(ren, loadedImage);
 		SDL_FreeSurface(loadedImage);
 		if(texture == nullptr)
