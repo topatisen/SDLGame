@@ -32,14 +32,14 @@ int main(int argc, char *argv[]) {
 	//quit-flag
 	bool quit;
 
-	/* {{{ FPS-limit tjofrees */
+	//{/* {{{ FPS-limit tjofrees */
 	//The frames per second timer
 	LTimer fpsTimer;
 	//The frames per second cap timer
 	LTimer capTimer;
 	int countedFrames = 0;
 	fpsTimer.start();
-	/* }}} */
+	//}/* }}} */
 	
 	//Init SDL
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0){
@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
 	}
 	TTF_Init();
 	
-	/* {{{ SDL window, renderer'n'shizzle to ma dizzle */
+	//{/* {{{ SDL window, renderer'n'shizzle to ma dizzle */
 	SDL_Window *window = SDL_CreateWindow("Jag har en penis i min skallerorm", 100, 100, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (window == nullptr){
 		logSDLError(std::cerr, "CreateWindow");
@@ -59,11 +59,12 @@ int main(int argc, char *argv[]) {
 		logSDLError(std::cerr, "CreateRenderer");
 		return 3;
 	}
-	/* {{{ Load a font */
+	//}/* }}} */
+	//{/* {{{ Load a font */
 	TTF_Font *fFont = NULL;
 	fFont = TTF_OpenFont("font.ttf", 24);
 	SDL_Color black = {0, 0, 0};
-	/* }}} */
+	//}/* }}} */
 	
 	/* {{{ Make a "string", to make more, just do 1 new surface and  new texture */
 	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(fFont, "Testing testing", black);
@@ -71,14 +72,14 @@ int main(int argc, char *argv[]) {
 	SDL_FreeSurface(surfaceMessage);
 	/* }}} */
 	
-	/* {{{ SDL event */
+	//{/* {{{ SDL event */
 	SDL_Event e;
-	/* }}} */
+	//}/* }}} */
 	
-	/* {{{ Textures */
+	//{/* {{{ Textures */
 	SDL_Texture *background = loadTexture("background.bmp", renderer);
 	SDL_Texture *image = loadTexture("image.bmp", renderer);
-	/* }}} */
+	//}/* }}} */
 	
 	//temp variables
 	int imageY = 0;
@@ -101,7 +102,7 @@ int main(int argc, char *argv[]) {
 		
 		//
 		
-		/* {{{ Keyboard presses*/
+		//{/* {{{ Keyboard presses*/
 		const Uint8 *state = SDL_GetKeyboardState(NULL);
 		
 		//Key up
@@ -118,7 +119,7 @@ int main(int argc, char *argv[]) {
 		if (state[SDL_SCANCODE_ESCAPE]){
 			quit = true;
 		}
-		/*}}}*/
+		//}/*}}}*/
 		
 		//fps
 		float avgFPS = countedFrames / ( fpsTimer.getTicks() / 1000.f );
@@ -132,7 +133,7 @@ int main(int argc, char *argv[]) {
 		//If frame finished early
 		int frameTicks = capTimer.getTicks();
 		
-		/* {{{ DRAW */
+		//{/* {{{ DRAW */
 		if( frameTicks < SCREEN_TICK_PER_FRAME )
 		{
 			//Wait remaining time
@@ -148,7 +149,7 @@ int main(int argc, char *argv[]) {
 			//render texture
 			SDL_RenderPresent(renderer);
 		}
-		/* }}} */
+		//}/* }}} */
 	}
 	
 	//destroy everyone of them! Utah! Come in Utah! There's a target in your immediate proximity!
