@@ -21,6 +21,8 @@ using namespace std;
 #include "timer.h"
 #include "utilities.h"
 
+#include "miner.h"
+
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 768
 
@@ -81,6 +83,11 @@ int main(int argc, char *argv[]) {
 	SDL_Texture *image = loadTexture("image.bmp", renderer);
 	//}/* }}} */
 	
+	//Create a miner!
+	cMiner oMiner;
+	oMiner.create(renderer);
+	
+	
 	//temp variables
 	int imageY = 0;
 	char text[40];
@@ -99,22 +106,14 @@ int main(int argc, char *argv[]) {
 		surfaceMessage = TTF_RenderText_Solid(fFont,text, black);
 		Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 		SDL_FreeSurface(surfaceMessage);
-		
 		//
+		
+		//miner run
+		oMiner.run();
 		
 		//{/* {{{ Keyboard presses*/
 		const Uint8 *state = SDL_GetKeyboardState(NULL);
-		
-		//Key up
-		if (state[SDL_SCANCODE_DOWN]) {
-			imageY +=4;
-		}
-		
-		//key up
-		if (state[SDL_SCANCODE_UP]) {
-			imageY -=4;
-		} 
-		
+	
 		//quit
 		if (state[SDL_SCANCODE_ESCAPE]){
 			quit = true;
@@ -146,6 +145,7 @@ int main(int argc, char *argv[]) {
 			//draw text
 			renderTexture(Message, renderer, 0, 0);
 			
+			oMiner.draw(renderer);
 			//render texture
 			SDL_RenderPresent(renderer);
 		}
