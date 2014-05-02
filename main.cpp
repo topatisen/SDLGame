@@ -102,9 +102,6 @@ int main(int argc, char *argv[]) {
 	//while running forever. Forever ever? Forever ever? FOREVER AND EVER AND EVER OSV.
 	while(!quit) {
 	
-		//get & update mouse x & y
-		
-	
 		// Empty event queueueueueu
 		SDL_PumpEvents();
 		textInt ++;

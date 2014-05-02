@@ -83,7 +83,7 @@ class cMiner /*THE ALMIGHTY MINER*/
 			{
 				gravity = 0;
 				
-				if(goaly < y-16)
+				if(goaly < y-16)//if the goal is above;jump, otherwise; float smoooooooooooothly towards the goal
 				{
 					vspeed = -12;
 				}
