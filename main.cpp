@@ -26,6 +26,10 @@ using namespace std;
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 768
 
+//mouse_x & mouse_y, is global, a lot of classes'n'shitz will be using those
+int mouse_x = 0;
+int mouse_y = 0;
+
 const int SCREEN_FPS = 60;
 const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;
 
@@ -79,7 +83,7 @@ int main(int argc, char *argv[]) {
 	//}/* }}} */
 	
 	//{/* {{{ Textures */
-	SDL_Texture *background = loadTexture("background.bmp", renderer);
+	SDL_Texture *background = loadTexture("sGrid.bmp", renderer);
 	SDL_Texture *image = loadTexture("image.bmp", renderer);
 	//}/* }}} */
 	
@@ -98,27 +102,30 @@ int main(int argc, char *argv[]) {
 	//while running forever. Forever ever? Forever ever? FOREVER AND EVER AND EVER OSV.
 	while(!quit) {
 	
+		//get & update mouse x & y
+		
+	
 		// Empty event queueueueueu
 		SDL_PumpEvents();
 		textInt ++;
-		//draw text
-		sprintf(text,"Testing, this should be increasing; %d",textInt);
+		//run text
+		sprintf(text,"Mouse_x;%d , Miner x; %d",oMiner.goalx, oMiner.x);
 		surfaceMessage = TTF_RenderText_Solid(fFont,text, black);
 		Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 		SDL_FreeSurface(surfaceMessage);
 		//
 		
-		//miner run
-		oMiner.run();
-		
 		//{/* {{{ Keyboard presses*/
 		const Uint8 *state = SDL_GetKeyboardState(NULL);
-	
 		//quit
 		if (state[SDL_SCANCODE_ESCAPE]){
 			quit = true;
 		}
 		//}/*}}}*/
+		
+		//miner run
+		oMiner.run(e);
+		
 		
 		//fps
 		float avgFPS = countedFrames / ( fpsTimer.getTicks() / 1000.f );
