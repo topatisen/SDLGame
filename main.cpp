@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
 		SDL_PumpEvents();
 		textInt ++;
 		//run text
-		sprintf(text,"Mouse_x;%d , Miner x; %d",oMiner.goalx, oMiner.x);
+		sprintf(text,"miner.currentPoint;%d , pointnum; %d",oMiner.currentPoint, oMiner.pointnum);
 		surfaceMessage = TTF_RenderText_Solid(fFont,text, black);
 		Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 		SDL_FreeSurface(surfaceMessage);
@@ -121,7 +121,7 @@ int main(int argc, char *argv[]) {
 		//}/*}}}*/
 		
 		//miner run
-		oMiner.run(e);
+		oMiner.run(e,renderer);
 		
 		
 		//fps
