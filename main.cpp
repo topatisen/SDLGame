@@ -112,7 +112,7 @@ int main(int argc, char *argv[]) {
 		SDL_PumpEvents();
 		textInt ++;
 		//run text
-		sprintf(text,"groundnum;%d ",oCreateGround.groundnum);
+		sprintf(text,"groundnum;%d, pointnum: %d ", oCreateGround.groundnum, oMiner.pointnum);
 		surfaceMessage = TTF_RenderText_Solid(fFont,text, black);
 		Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 		SDL_FreeSurface(surfaceMessage);
@@ -123,6 +123,11 @@ int main(int argc, char *argv[]) {
 		//quit
 		if (state[SDL_SCANCODE_ESCAPE]){
 			quit = true;
+		}
+		
+		//make miner follow the trail!
+		if (state[SDL_SCANCODE_RETURN]){
+			oMiner.moveToGoal = true;
 		}
 		//}/*}}}*/
 		
