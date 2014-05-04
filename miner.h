@@ -52,7 +52,7 @@ class cMiner /*THE ALMIGHTY MINER*/
 	public:
 		int  gravity, mouse_x,mouse_y, goalx, goaly;
 		int pointnum, currentPoint;
-		float x, y,hspeed, vspeed;
+		float x, y,hspeed, vspeed, dx, dy;
 		SDL_Texture *sMiner;
 		cPoint oPoint[10];
 		bool collision;
@@ -111,8 +111,10 @@ class cMiner /*THE ALMIGHTY MINER*/
 					}
 				}
 			}
-			//move to next goal if "inside" the goal/point
-			if(x>oPoint[currentPoint].x&&x < oPoint[currentPoint].x+32)
+			//move to next goal if "inside" the goal/point (circle-collision, faster and doesn't need to be that precise)
+			dx = (oPoint[currentPoint].x+32)-(x+32);
+			dy = (oPoint[currentPoint].y+32)-(y+32);
+			if(((dx*dx)+(dy*dy))<(16*32))
 			{
 				oPoint[currentPoint].taken = true;
 				if(currentPoint < pointnum-1)
