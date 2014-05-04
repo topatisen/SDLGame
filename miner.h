@@ -55,7 +55,7 @@ class cMiner /*THE ALMIGHTY MINER*/
 		float x, y,hspeed, vspeed;
 		SDL_Texture *sMiner;
 		cPoint oPoint[10];
-		bool atGoal;
+		bool atGoal, collision;
 		TTF_Font *fFont;
 		void create(SDL_Renderer *ren)
 		{
@@ -67,16 +67,16 @@ class cMiner /*THE ALMIGHTY MINER*/
 			
 			sMiner = loadTexture("sMiner.bmp",ren);
 			x = 1024/2;
-			y = 768/2;
+			y = 0;
 			goalx = x;
 			goaly = y;
 			vspeed = 0;
 			hspeed = 0;
 			gravity = 0;
 			mouse_x, mouse_y = 0;
-			//oPoint[0].create(x,y,ren);
-			atGoal = false;
+			collision = false;
 		};
+		
 		void run(SDL_Event e, SDL_Renderer *ren)
 		{
 			//physics-shizzle
@@ -87,6 +87,9 @@ class cMiner /*THE ALMIGHTY MINER*/
 			//limit hspeed
 			if(hspeed > 2) hspeed = 2;
 			if(hspeed < -2) hspeed = -2;
+			//limit vspeed
+			if(hspeed > 6) hspeed = 6;
+			if(hspeed < -6) hspeed = -6;
 			
 			//mousey mousey, you are so lousey
 			SDL_GetMouseState(&mouse_x,&mouse_y);/*This has to be inside the class to update properly, for some strange reason :S*/
@@ -94,7 +97,7 @@ class cMiner /*THE ALMIGHTY MINER*/
 			
 			while(SDL_PollEvent(&e))//poll events, this also needs to be here to update properly
 			{
-				if(e.type == SDL_MOUSEBUTTONDOWN)//when mousebutton is pressed, set goal to mouse position
+				if(SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))//when mousebutton is pressed, set goal to mouse position
 				{
 					oPoint[pointnum].create(mouse_x,mouse_y,ren);
 					oPoint[pointnum].x = mouse_x;
@@ -141,6 +144,16 @@ class cMiner /*THE ALMIGHTY MINER*/
 			else
 			hspeed = 0;
 			
+			/*if(collision == true)
+			{
+				gravity = 0;
+				vspeed = 0;
+			}
+			else
+			{
+				gravity = 1;
+			}*/
+			
 			//Jump up and down!
 			if(y < 768-64)
 			{
@@ -150,17 +163,35 @@ class cMiner /*THE ALMIGHTY MINER*/
 			{
 				gravity = 0;
 				
+				
+			}
+			////
+			
+		};
+		
+		void checkCollision(int otherx, int othery)
+		{
+			if(x+48>otherx&&x<otherx+48&&y+64>othery&&y<othery+64)
+			{
 				if(oPoint[currentPoint].y < y-16)//if the goal is above;jump, otherwise; float smoooooooooooothly towards the goal
 				{
 					vspeed = -12;
 				}
 				else
 				{
-					vspeed = -0.1;
+					y = othery-64;
+					vspeed = 0;
 				}
+				gravity = 0;
+				collision = true;
 			}
-			////
-		};
+			else
+			{
+				gravity = 1;
+				collision = false;
+			}
+		}
+		
 		void draw(SDL_Renderer *ren)
 		{
 			for(int i = 0;i<pointnum;i++)

@@ -21,6 +21,7 @@ using namespace std;
 #include "timer.h"
 #include "utilities.h"
 
+#include "ground.h"
 #include "miner.h"
 
 #define SCREEN_WIDTH 1024
@@ -83,14 +84,17 @@ int main(int argc, char *argv[]) {
 	//}/* }}} */
 	
 	//{/* {{{ Textures */
-	SDL_Texture *background = loadTexture("sGrid.bmp", renderer);
-	SDL_Texture *image = loadTexture("image.bmp", renderer);
+	SDL_Texture *sBackground = loadTexture("sBackground.bmp", renderer);
+	SDL_Texture *sGrid = loadTexture("sGrid.bmp", renderer);
 	//}/* }}} */
 	
 	//Create a miner!
 	cMiner oMiner;
 	oMiner.create(renderer);
 	
+	//ground test
+	cCreateGround oCreateGround;
+	oCreateGround.create(renderer);
 	
 	//temp variables
 	int imageY = 0;
@@ -106,7 +110,7 @@ int main(int argc, char *argv[]) {
 		SDL_PumpEvents();
 		textInt ++;
 		//run text
-		sprintf(text,"miner.currentPoint;%d , pointnum; %d",oMiner.currentPoint, oMiner.pointnum);
+		sprintf(text,"groundnum;%d ",oCreateGround.groundnum);
 		surfaceMessage = TTF_RenderText_Solid(fFont,text, black);
 		Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 		SDL_FreeSurface(surfaceMessage);
@@ -122,6 +126,14 @@ int main(int argc, char *argv[]) {
 		
 		//miner run
 		oMiner.run(e,renderer);
+		//checkCollision for miner
+		for(int i = 0;i < oCreateGround.groundnum;i++)
+		{
+			oMiner.checkCollision(oCreateGround.oGround[i].x,oCreateGround.oGround[i].y);
+		}
+		
+		//make ground, loop
+		oCreateGround.makeGround(renderer);
 		
 		
 		//fps
@@ -141,15 +153,20 @@ int main(int argc, char *argv[]) {
 		{
 			//Wait remaining time
 			SDL_Delay( SCREEN_TICK_PER_FRAME - frameTicks );
+			
 			// Draw background
-			renderTexture(background, renderer, 0, 0);
-			//draw texture
-			renderTexture(image, renderer, SCREEN_WIDTH / 2, imageY);
+			renderTexture(sBackground, renderer, 0, 0);
 			
 			//draw text
 			renderTexture(Message, renderer, 0, 0);
 			
 			oMiner.draw(renderer);
+			
+			oCreateGround.draw(renderer);
+			
+			//draw grid on top of everything, good for debugging
+			renderTexture(sGrid, renderer, 0, 0);
+			
 			//render texture
 			SDL_RenderPresent(renderer);
 		}
@@ -157,8 +174,7 @@ int main(int argc, char *argv[]) {
 	}
 	
 	//destroy everyone of them! Utah! Come in Utah! There's a target in your immediate proximity!
-	SDL_DestroyTexture(background);
-	SDL_DestroyTexture(image);
+	SDL_DestroyTexture(sBackground);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
