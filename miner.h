@@ -118,6 +118,9 @@ class cMiner /*THE ALMIGHTY MINER*/
 			dy = (oPoint[currentPoint].y+32)-(y+32);
 			if(((dx*dx)+(dy*dy))<(16*32))
 			{
+				//resets both of the goal-bools, will make workaround later
+				goalBelow = false;
+				goalAbove = false;
 				
 				oPoint[currentPoint].taken = true;
 				if(currentPoint < pointnum-1)
