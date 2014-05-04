@@ -55,7 +55,7 @@ class cMiner /*THE ALMIGHTY MINER*/
 		float x, y,hspeed, vspeed, dx, dy;
 		SDL_Texture *sMiner;
 		cPoint oPoint[10];
-		bool collision;
+		bool collision, goalAbove, goalBelow;
 		TTF_Font *fFont;
 		void create(SDL_Renderer *ren)
 		{
@@ -155,10 +155,14 @@ class cMiner /*THE ALMIGHTY MINER*/
 			{
 				if(oPoint[currentPoint].y < y-16)//if the goal is above;jump, otherwise; float smoooooooooooothly towards the goal
 				{
+					goalBelow = false;
+					goalAbove = true;
 					vspeed = -12;
 				}
 				else
 				{
+					goalAbove = false;
+					goalBelow = true;
 					y = othery-68;
 					vspeed = 0;
 				}
@@ -188,6 +192,18 @@ class cMiner /*THE ALMIGHTY MINER*/
 			}
 		};
 		
+		void checkLadder(int otherx, int othery)
+		{
+			//if goal is above, jump on them, otherwise jump through them
+			if((y>othery&&x+46>otherx&&x<otherx+46&&y-48<othery)&&goalAbove == true)//
+			{
+				vspeed = -12;
+			}
+			else
+			{
+				gravity = 1;
+			}
+		};
 		void draw(SDL_Renderer *ren)
 		{
 			for(int i = 0;i<pointnum;i++)

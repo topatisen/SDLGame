@@ -133,6 +133,11 @@ int main(int argc, char *argv[]) {
 		{
 			oMiner.checkCollision(oCreateGround.oGround[i].x,oCreateGround.oGround[i].y);
 		}
+		//check ladders for miner
+		for(int i = 0;i < oCreateGround.laddernum;i++)
+		{
+			oMiner.checkLadder(oCreateGround.oStepladder[i].x,oCreateGround.oStepladder[i].y);
+		}
 		
 		//make ground, loop
 		oCreateGround.makeGround(renderer);
