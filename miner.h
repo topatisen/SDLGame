@@ -85,11 +85,9 @@ class cMiner /*THE ALMIGHTY MINER*/
 			vspeed += gravity;
 			///
 			//limit hspeed
-			if(hspeed > 2) hspeed = 2;
-			if(hspeed < -2) hspeed = -2;
-			//limit vspeed
-			if(hspeed > 6) hspeed = 6;
-			if(hspeed < -6) hspeed = -6;
+			if(hspeed > 3) hspeed = 3;
+			if(hspeed < -3) hspeed = -3;
+			
 			
 			//mousey mousey, you are so lousey
 			SDL_GetMouseState(&mouse_x,&mouse_y);/*This has to be inside the class to update properly, for some strange reason :S*/
@@ -171,6 +169,86 @@ class cMiner /*THE ALMIGHTY MINER*/
 		
 		void checkCollision(int otherx, int othery)
 		{
+			//New collision
+			//Top collision
+			if((y+64>othery&&x+46>otherx&&x<otherx+46&&y<othery))//
+			{
+				
+				if(oPoint[currentPoint].y < y-16)//if the goal is above;jump, otherwise; float smoooooooooooothly towards the goal
+				{
+					vspeed = -12;
+				}
+				else
+				{
+					y = othery-68;
+					vspeed = 0;
+				}
+				
+			}
+			else
+			{
+
+					gravity = 1;
+				
+			}
+			//right 
+			if((x+48+hspeed > otherx&&x+44<otherx&&y+60>othery&&y<othery+48))	
+			{
+				
+				x = otherx-48;
+				hspeed = 0;
+			}
+			//left
+			if((x+hspeed<otherx+48&&x>otherx+44&&y+60>othery&&y<othery+48))
+			{
+					
+					x = otherx+48;
+					hspeed = 0;
+			}
+			//bottom (working) 
+			if((y<othery+50&&y>othery&&x+46>otherx&&x<otherx+46))
+			{
+				
+				vspeed = 0;
+				gravity = 0;
+				y = othery+50;
+			}
+			//down
+			/*if(x+48>otherx&&x<otherx+48&&y+64>othery&&y<othery+64)
+			{
+				if(oPoint[currentPoint].y < y-16)//if the goal is above;jump, otherwise; float smoooooooooooothly towards the goal
+				{
+					vspeed = -12;
+				}
+				else
+				{
+					y = othery-68;
+					vspeed = 0;
+				}
+				gravity = 0;
+				collision = true;
+			}
+			//right
+			if(x+60>otherx&&x+56<otherx&&y>othery&&y<othery+32)
+			{
+				
+				hspeed = -hspeed;
+				x = otherx-60;
+				//vspeed = 0;
+				//gravity = 0;
+				collision = true;
+			}
+			//left
+			if(x<otherx+60&&x>otherx+56&&y>othery&&y<othery+32)
+			{
+				
+				hspeed = -hspeed;
+				x = otherx+60;
+				//vspeed = 0;
+				//gravity = 0;
+				collision = true;
+			}
+			/* Old collision
 			if(x+48>otherx&&x<otherx+48&&y+64>othery&&y<othery+64)
 			{
 				if(oPoint[currentPoint].y < y-16)//if the goal is above;jump, otherwise; float smoooooooooooothly towards the goal
@@ -189,7 +267,7 @@ class cMiner /*THE ALMIGHTY MINER*/
 			{
 				gravity = 1;
 				collision = false;
-			}
+			}*/
 		}
 		
 		void draw(SDL_Renderer *ren)

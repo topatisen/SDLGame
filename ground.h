@@ -22,6 +22,7 @@ class cGround
 				if(mouse_x > x&&mouse_x < x+64&&mouse_y > y&&mouse_y < y+64)
 				{
 					x = 1000;
+					y = 1000;
 				}
 			}
 		};
@@ -41,7 +42,7 @@ class cCreateGround
 	void create(SDL_Renderer *ren)
 	{
 		groundx = 0;
-		groundy = 640;
+		groundy = 384;
 		groundnum = 0;
 		oGround[groundnum].create(ren,groundx, groundy);
 	}
