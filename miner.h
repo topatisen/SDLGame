@@ -54,8 +54,9 @@ class cMiner /*THE ALMIGHTY MINER*/
 		int pointnum, currentPoint;
 		float x, y,hspeed, vspeed, dx, dy;
 		SDL_Texture *sMiner;
+		SDL_Texture *sSelected;
 		cPoint oPoint[20];
-		bool collision, goalAbove, goalBelow, moveToGoal;
+		bool collision, goalAbove, goalBelow, moveToGoal, selected, clicked;
 		TTF_Font *fFont;
 		void create(SDL_Renderer *ren)
 		{
@@ -66,6 +67,7 @@ class cMiner /*THE ALMIGHTY MINER*/
 			fFont = TTF_OpenFont("font.ttf", 24);
 			
 			sMiner = loadTexture("sMiner.bmp",ren);
+			sSelected = loadTexture("sSelected.bmp",ren);
 			x = 1024/2;
 			y = 0;
 			goalx = x;
@@ -74,8 +76,10 @@ class cMiner /*THE ALMIGHTY MINER*/
 			hspeed = 0;
 			gravity = 0;
 			mouse_x, mouse_y = 0;
+			selected = false;
 			collision = false;
 			moveToGoal = false;
+			clicked = false;
 		};
 		
 		void run(SDL_Event e, SDL_Renderer *ren)
@@ -94,24 +98,45 @@ class cMiner /*THE ALMIGHTY MINER*/
 			SDL_GetMouseState(&mouse_x,&mouse_y);/*This has to be inside the class to update properly, for some strange reason :S*/
 			SDL_PumpEvents();
 			
-			while(SDL_PollEvent(&e))//poll events, this also needs to be here to update properly
-			{
-				if(SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))//when left mousebutton is pressed, set goal to mouse position
+			
+				//when left mousebutton is pressed
+				if(SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))
 				{
-					oPoint[pointnum].create(mouse_x,mouse_y,ren);
-					oPoint[pointnum].x = mouse_x;
-					oPoint[pointnum].y = mouse_y;
-					//round them up!
-					oPoint[pointnum].x = oPoint[pointnum].x-oPoint[pointnum].x%64;
-					oPoint[pointnum].y = oPoint[pointnum].y-oPoint[pointnum].y%64;
-					if(pointnum < 20)
-						pointnum ++;
-					else
+					if(tool == 0&&clicked == false)//if the tool is 0, select the miner if the mouse is upon him! Huvaligen!
 					{
-						pointnum = 0;
+						if(mouse_x > x&&mouse_x < x+64&&mouse_y > y&&mouse_y < y+64)
+						{
+							selected = true;
+							clicked = true;
+						}
+						else
+						{
+							selected = false;
+							clicked = true;
+						}
+					}
+					if(tool == 1&&selected == true&&clicked == false)//if the tool is "goalmaker(1)", make goals
+					{
+						oPoint[pointnum].create(mouse_x,mouse_y,ren);
+						oPoint[pointnum].x = mouse_x;
+						oPoint[pointnum].y = mouse_y;
+						//round them up!
+						oPoint[pointnum].x = oPoint[pointnum].x-oPoint[pointnum].x%64;
+						oPoint[pointnum].y = oPoint[pointnum].y-oPoint[pointnum].y%64;
+						if(pointnum < 20)
+							pointnum ++;
+						else
+						{
+							pointnum = 0;
+						}
+						clicked = true;
 					}
 				}
-			}
+				else
+				{
+					clicked = false;
+				}
+			
 			
 			//move to next goal if "inside" the goal/point (circle-collision, faster and doesn't need to be that precise)
 			dx = (oPoint[currentPoint].x+32)-(x+32);
@@ -138,17 +163,19 @@ class cMiner /*THE ALMIGHTY MINER*/
 			}
 			if(pointnum > 1&&moveToGoal == true)
 			{
-			if(x < oPoint[currentPoint].x)//move towards goal
-			{
-				hspeed +=0.2;
-			}
-			else// --||--
-			{
-				hspeed -=0.2;
-			}
+				if(x < oPoint[currentPoint].x)//move towards goal
+				{
+					hspeed +=0.2;
+				}
+				else// --||--
+				{
+					hspeed -=0.2;
+				}
 			}
 			else
-			hspeed = 0;
+			{
+				hspeed = 0;
+			}
 			
 			////
 			
@@ -159,7 +186,7 @@ class cMiner /*THE ALMIGHTY MINER*/
 			//Top collision
 			if((y+64>othery&&x+46>otherx&&x<otherx+46&&y<othery))//
 			{
-				if(oPoint[currentPoint].y+64 < y)//if the goal is above;jump, otherwise; float smoooooooooooothly towards the goal
+				if((oPoint[currentPoint].y+64 < y)&&(pointnum > 1))//if the goal is above;jump, otherwise; float smoooooooooooothly towards the goal
 				{
 					goalBelow = false;
 					goalAbove = true;
@@ -216,7 +243,7 @@ class cMiner /*THE ALMIGHTY MINER*/
 			for(int i = 0;i<pointnum;i++)
 			{
 				//draw lines between points
-				if(pointnum > 1&&(oPoint[i+1].exists == true))
+				/*if(pointnum > 1&&(oPoint[i+1].exists == true))
 				{
 					//between points
 					SDL_RenderDrawLine(ren,oPoint[i].x+32, oPoint[i].y+32,oPoint[i+1].x+32,oPoint[i+1].y+32);
@@ -224,9 +251,13 @@ class cMiner /*THE ALMIGHTY MINER*/
 					SDL_RenderDrawLine(ren,oPoint[0].x+32, oPoint[0].y+32,oPoint[pointnum-1].x+32,oPoint[pointnum-1].y+32);
 				}
 				
-				
+				*/
 				if(oPoint[i].exists == true)
 					oPoint[i].draw(ren,i);
+			}
+			if(selected == true)
+			{
+				renderTexture(sSelected, ren, x, (y-64));
 			}
 			renderTexture(sMiner, ren, x, y);
 		};

@@ -15,6 +15,16 @@ topatisen & dunz0r
 #include <stdlib.h>
 #include <cstdio>
 
+//globals
+//view-moving, add those to every draw-function(later)
+int viewx = 0;
+int viewy = 0;
+
+//tool, just an integer
+//0 = nothing, selecting osv.
+//1 = goalmakerthinga'ma'jing
+int tool = 0;
+
 using namespace std;
 
 //adding timer.h
@@ -27,9 +37,6 @@ using namespace std;
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 768
 
-//mouse_x & mouse_y, is global, a lot of classes'n'shitz will be using those
-int mouse_x = 0;
-int mouse_y = 0;
 
 const int SCREEN_FPS = 60;
 const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;
@@ -56,7 +63,7 @@ int main(int argc, char *argv[]) {
 	TTF_Init();
 	
 	//{/* {{{ SDL window, renderer'n'shizzle to ma dizzle */
-	SDL_Window *window = SDL_CreateWindow("Jag har en skalle i min penis", 100, 100, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+	SDL_Window *window = SDL_CreateWindow("Jag har en skalle i min skalle", 100, 100, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (window == nullptr){
 		logSDLError(std::cerr, "CreateWindow");
 		return 2;
@@ -79,6 +86,10 @@ int main(int argc, char *argv[]) {
 	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(fFont, "Testing testing", black);
 	SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 	SDL_FreeSurface(surfaceMessage);
+	
+	SDL_Surface* debugSurface = TTF_RenderText_Solid(fFont, "Testing testing", black);
+	SDL_Texture* debugMessage = SDL_CreateTextureFromSurface(renderer, debugSurface);
+	SDL_FreeSurface(debugSurface);
 	/* }}} */
 	
 	//{/* {{{ SDL event */
@@ -90,9 +101,15 @@ int main(int argc, char *argv[]) {
 	SDL_Texture *sGrid = loadTexture("sGrid.bmp", renderer);
 	//}/* }}} */
 	
-	//Create a miner!
-	cMiner oMiner;
-	oMiner.create(renderer);
+	//Create some miners!
+	cMiner oMiner[5];
+	int minerx = 64;
+	for(int i = 0; i<5;i++)
+	{
+		oMiner[i].create(renderer);
+		oMiner[i].x = minerx;
+		minerx += 64;
+	}
 	
 	//ground test
 	cCreateGround oCreateGround;
@@ -104,6 +121,10 @@ int main(int argc, char *argv[]) {
 	int textInt = 0;
 	/////////
 	
+	//mouse
+	int mouse_x = 0;
+	int mouse_y = 0;
+	
 	
 	//while running forever. Forever ever? Forever ever? FOREVER AND EVER AND EVER OSV.
 	while(!quit) {
@@ -112,13 +133,18 @@ int main(int argc, char *argv[]) {
 		SDL_PumpEvents();
 		textInt ++;
 		//run text
-		sprintf(text,"groundnum;%d, pointnum: %d ", oCreateGround.groundnum, oMiner.pointnum);
+		sprintf(text,"0 = selection, 1 = place goals, 2 = place ladders, when selected press enter to start path");
 		surfaceMessage = TTF_RenderText_Solid(fFont,text, black);
 		Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 		SDL_FreeSurface(surfaceMessage);
+		
+		sprintf(text,"Current tool: %d , groundnum: %d", tool, oCreateGround.groundnum);
+		debugSurface = TTF_RenderText_Solid(fFont,text, black);
+		debugMessage = SDL_CreateTextureFromSurface(renderer, debugSurface);
+		SDL_FreeSurface(debugSurface);
 		//
 		
-		//{/* {{{ Keyboard presses*/
+		//{/* {{{ Keyboard presses, mouse events osv.*/
 		const Uint8 *state = SDL_GetKeyboardState(NULL);
 		//quit
 		if (state[SDL_SCANCODE_ESCAPE]){
@@ -126,22 +152,49 @@ int main(int argc, char *argv[]) {
 		}
 		
 		//make miner follow the trail!
-		if (state[SDL_SCANCODE_RETURN]){
-			oMiner.moveToGoal = true;
+		if (state[SDL_SCANCODE_RETURN])
+		{
+			for(int i = 0; i<5;i++)
+			{
+				if(oMiner[i].selected == true)
+				{
+					oMiner[i].moveToGoal = true;
+				}
+			}
+		}
+		
+		//Select tools (will be a class later)
+		if (state[SDL_SCANCODE_0]){
+			tool = 0;
+		}
+		if (state[SDL_SCANCODE_1]){
+			tool = 1;
+		}
+		if (state[SDL_SCANCODE_2]){
+			tool = 2;
 		}
 		//}/*}}}*/
 		
 		//miner run
-		oMiner.run(e,renderer);
+		for(int i = 0; i<5;i++)
+		{
+			oMiner[i].run(e,renderer);
+		}
 		//check collision for miner
 		for(int i = 0;i < oCreateGround.groundnum;i++)
 		{
-			oMiner.checkCollision(oCreateGround.oGround[i].x,oCreateGround.oGround[i].y);
+			for(int p = 0; p<5;p++)
+			{
+				oMiner[p].checkCollision(oCreateGround.oGround[i].x,oCreateGround.oGround[i].y);
+			}
 		}
 		//check ladders for miner
 		for(int i = 0;i < oCreateGround.laddernum;i++)
 		{
-			oMiner.checkLadder(oCreateGround.oStepladder[i].x,oCreateGround.oStepladder[i].y);
+			for(int p = 0; p<5;p++)
+			{
+				oMiner[p].checkLadder(oCreateGround.oStepladder[i].x,oCreateGround.oStepladder[i].y);
+			}
 		}
 		
 		//make ground, loop
@@ -170,11 +223,11 @@ int main(int argc, char *argv[]) {
 			// Draw background
 			renderTexture(sBackground, renderer, 0, 0);
 			
-			//draw text
-			renderTexture(Message, renderer, 0, 0);
-			
 			//draw miner
-			oMiner.draw(renderer);
+			for(int i = 0; i<5;i++)
+			{
+				oMiner[i].draw(renderer);
+			}
 			
 			//draw ground
 			oCreateGround.draw(renderer);
@@ -182,6 +235,9 @@ int main(int argc, char *argv[]) {
 			//draw grid on top of everything, good for debugging
 			renderTexture(sGrid, renderer, 0, 0);
 			
+			//draw text
+			renderTexture(Message, renderer, 0, 0);
+			renderTexture(debugMessage, renderer, 0, 32);
 			//}/* }}} */
 			
 			//render texture

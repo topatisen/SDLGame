@@ -29,7 +29,7 @@ class cStepladder//simple ladder, "jumpthroughable"
 		};
 		void draw(SDL_Renderer *ren)
 		{
-			renderTexture(sStepladder, ren, x, y);
+			renderTexture(sStepladder, ren, x+viewx, y+viewy);
 		};
 };
 
@@ -60,20 +60,21 @@ class cGround
 		};
 		void draw(SDL_Renderer *ren)
 		{
-			renderTexture(sGround, ren, x, y);
+			renderTexture(sGround, ren, x+viewx, y+viewy);
 		};
 };
 
 class cCreateGround
 {
 	public:
-	cGround oGround[1000];
-	cStepladder oStepladder[1000];
+	cGround oGround[200];
+	cStepladder oStepladder[100];
 	int groundnum, laddernum, groundx, groundy, mouse_x, mouse_y;
-	
+	bool clicked;
 	
 	void create(SDL_Renderer *ren)
 	{
+		clicked = false;
 		groundx = 0;
 		groundy = 384;
 		groundnum = 0;
@@ -83,12 +84,21 @@ class cCreateGround
 	void makeGround(SDL_Renderer *ren)//change name later
 	{
 		SDL_GetMouseState(&mouse_x,&mouse_y);
-		if(SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(2))//mittenmusknappen/musmittenknappen/middlemousebutton places stepladder
+		if(SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1)&&(tool == 2)&&(laddernum < 99))//places stepladder if tool 2
 		{
-			oStepladder[laddernum].create(ren,mouse_x, mouse_y);
-			oStepladder[laddernum].x = oStepladder[laddernum].x-oStepladder[laddernum].x%64;//snap
-			oStepladder[laddernum].y = oStepladder[laddernum].y-oStepladder[laddernum].y%64;//snap
-			laddernum ++;
+			if(clicked == false)
+			{
+				oStepladder[laddernum].create(ren,mouse_x, mouse_y);
+				oStepladder[laddernum].x = oStepladder[laddernum].x-oStepladder[laddernum].x%64;//snap
+				oStepladder[laddernum].y = oStepladder[laddernum].y-oStepladder[laddernum].y%64;//snap
+				laddernum ++;
+				clicked = true;
+			}
+			
+		}
+		else
+		{
+			clicked = false;
 		}
 		
 		for(int i = 0;i<laddernum;i++)//make ground removable
@@ -99,7 +109,7 @@ class cCreateGround
 		{
 			oGround[i].run();
 		}
-		if(groundnum < 999)
+		if(groundnum < 199)
 		{
 			oGround[groundnum].create(ren,groundx, groundy);
 			if(groundx < 1024)
