@@ -37,11 +37,10 @@ class cGround
 {
 	public:
 		int x,y, mouse_x, mouse_y;
-		SDL_Texture *sGround;
+		
 	
 		void create(SDL_Renderer *ren, int startx, int starty)
 		{
-			sGround = loadTexture("sGround.bmp",ren);
 			x = startx;
 			y = starty;
 		};
@@ -58,7 +57,7 @@ class cGround
 				}
 			}
 		};
-		void draw(SDL_Renderer *ren)
+		void draw(SDL_Renderer *ren, SDL_Texture *sGround)
 		{
 			renderTexture(sGround, ren, x+viewx, y+viewy);
 		};
@@ -68,12 +67,14 @@ class cCreateGround
 {
 	public:
 	cGround oGround[200];
+	SDL_Texture *sGround;
 	cStepladder oStepladder[100];
 	int groundnum, laddernum, groundx, groundy, mouse_x, mouse_y;
 	bool clicked;
 	
 	void create(SDL_Renderer *ren)
 	{
+		sGround = loadTexture("sGround.bmp",ren);
 		clicked = false;
 		groundx = 0;
 		groundy = 384;
@@ -128,7 +129,7 @@ class cCreateGround
 	{
 		for(int i = 0;i<groundnum;i++)
 		{
-			oGround[i].draw(ren);
+			oGround[i].draw(ren,sGround);
 		}
 		for(int i = 0;i<laddernum;i++)
 		{

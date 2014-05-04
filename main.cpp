@@ -119,6 +119,7 @@ int main(int argc, char *argv[]) {
 	int imageY = 0;
 	char text[40];
 	int textInt = 0;
+	float avgFPS = 0;
 	/////////
 	
 	//mouse
@@ -132,16 +133,16 @@ int main(int argc, char *argv[]) {
 		// Empty event queueueueueu
 		SDL_PumpEvents();
 		textInt ++;
-		//run text
-		sprintf(text,"0 = selection, 1 = place goals, 2 = place ladders, when selected press enter to start path");
+		//text; HUGE MEMORY-LEAK, must be changed
+		/*sprintf(text,"0 = selection, 1 = place goals, 2 = place ladders, when selected press enter to start path");
 		surfaceMessage = TTF_RenderText_Solid(fFont,text, black);
 		Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 		SDL_FreeSurface(surfaceMessage);
 		
-		sprintf(text,"Current tool: %d , groundnum: %d", tool, oCreateGround.groundnum);
+		sprintf(text,"Current tool: %d , groundnum: %d, avgFPS: %g", tool,oCreateGround.groundnum , avgFPS);
 		debugSurface = TTF_RenderText_Solid(fFont,text, black);
 		debugMessage = SDL_CreateTextureFromSurface(renderer, debugSurface);
-		SDL_FreeSurface(debugSurface);
+		SDL_FreeSurface(debugSurface);*/
 		//
 		
 		//{/* {{{ Keyboard presses, mouse events osv.*/
@@ -202,7 +203,7 @@ int main(int argc, char *argv[]) {
 		
 		
 		//fps
-		float avgFPS = countedFrames / ( fpsTimer.getTicks() / 1000.f );
+		avgFPS = countedFrames / ( fpsTimer.getTicks() / 1000.f );
 		if( avgFPS > 2000000 )
 		{
 			avgFPS = 0;

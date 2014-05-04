@@ -8,42 +8,40 @@ class cPoint /*The points that will be used as an array for the miner, easier to
 		int x,y;
 		bool exists, taken;
 		char text[40];
-		SDL_Texture *sPoint;
-		SDL_Texture *sPointTaken;
-		SDL_Surface* surfaceMessage;
-		SDL_Texture* Message;
+		
+		//SDL_Surface* surfaceMessage;
+		//SDL_Texture* Message;
 		SDL_Color black;
 		TTF_Font *font;
 	void create(int mouse_x, int mouse_y, SDL_Renderer *ren)
 	{	
-		sPoint = loadTexture("sGoal.bmp", ren);
-		sPointTaken = loadTexture("sGoalTaken.bmp", ren);
+		
 		x = mouse_x;
 		y = mouse_y;
 		//number test
-		black = {0, 0, 0};
+		/*black = {0, 0, 0};
 		font = TTF_OpenFont("font.ttf", 32);
 		surfaceMessage = TTF_RenderText_Solid(font, "Testing testing", black);
 		Message = SDL_CreateTextureFromSurface(ren, surfaceMessage);
-		SDL_FreeSurface(surfaceMessage);
+		SDL_FreeSurface(surfaceMessage);*/
 		
 		taken = false;
 		exists = true;//to be drawn or not to be drawn, that is the question
 	}
-	void draw(SDL_Renderer *ren, int idNumber)
+	void draw(SDL_Renderer *ren, int idNumber, SDL_Texture *sPoint,SDL_Texture *sPointTaken)
 	{
 		//numbertest
-		sprintf(text,"%d",idNumber);
+		/*sprintf(text,"%d",idNumber);
 		surfaceMessage = TTF_RenderText_Solid(font,text, black);
 		Message = SDL_CreateTextureFromSurface(ren, surfaceMessage);
-		SDL_FreeSurface(surfaceMessage);
+		SDL_FreeSurface(surfaceMessage);*/
 	
 		if(taken == false)
 			renderTexture(sPoint, ren, x, y);
 		else
 			renderTexture(sPointTaken, ren, x, y);
 			
-		renderTexture(Message, ren, x+24, y+8);
+		//renderTexture(Message, ren, x+24, y+8);
 	};
 };
 
@@ -55,6 +53,11 @@ class cMiner /*THE ALMIGHTY MINER*/
 		float x, y,hspeed, vspeed, dx, dy;
 		SDL_Texture *sMiner;
 		SDL_Texture *sSelected;
+		
+		//points
+		SDL_Texture *sPoint;
+		SDL_Texture *sPointTaken;
+		
 		cPoint oPoint[20];
 		bool collision, goalAbove, goalBelow, moveToGoal, selected, clicked;
 		TTF_Font *fFont;
@@ -68,6 +71,11 @@ class cMiner /*THE ALMIGHTY MINER*/
 			
 			sMiner = loadTexture("sMiner.bmp",ren);
 			sSelected = loadTexture("sSelected.bmp",ren);
+			
+			//points
+			sPoint = loadTexture("sGoal.bmp", ren);
+			sPointTaken = loadTexture("sGoalTaken.bmp", ren);
+			
 			x = 1024/2;
 			y = 0;
 			goalx = x;
@@ -253,7 +261,7 @@ class cMiner /*THE ALMIGHTY MINER*/
 				
 				*/
 				if(oPoint[i].exists == true)
-					oPoint[i].draw(ren,i);
+					oPoint[i].draw(ren,i,sPoint,sPointTaken);
 			}
 			if(selected == true)
 			{
