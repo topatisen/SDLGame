@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
 	TTF_Init();
 	
 	//{/* {{{ SDL window, renderer'n'shizzle to ma dizzle */
-	SDL_Window *window = SDL_CreateWindow("Jag har en penis i min skallerorm", 100, 100, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+	SDL_Window *window = SDL_CreateWindow("Jag har en skalle i min penis", 100, 100, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (window == nullptr){
 		logSDLError(std::cerr, "CreateWindow");
 		return 2;
@@ -67,13 +67,15 @@ int main(int argc, char *argv[]) {
 		return 3;
 	}
 	//}/* }}} */
+	
+	
 	//{/* {{{ Load a font */
 	TTF_Font *fFont = NULL;
 	fFont = TTF_OpenFont("font.ttf", 24);
 	SDL_Color black = {0, 0, 0};
 	//}/* }}} */
 	
-	/* {{{ Make a "string", to make more, just do 1 new surface and  new texture */
+	/* {{{ Make a "string", to make more, just do 1 new surface and  new texture, then free it */
 	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(fFont, "Testing testing", black);
 	SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 	SDL_FreeSurface(surfaceMessage);
@@ -126,7 +128,7 @@ int main(int argc, char *argv[]) {
 		
 		//miner run
 		oMiner.run(e,renderer);
-		//checkCollision for miner
+		//check collision for miner
 		for(int i = 0;i < oCreateGround.groundnum;i++)
 		{
 			oMiner.checkCollision(oCreateGround.oGround[i].x,oCreateGround.oGround[i].y);
@@ -154,18 +156,23 @@ int main(int argc, char *argv[]) {
 			//Wait remaining time
 			SDL_Delay( SCREEN_TICK_PER_FRAME - frameTicks );
 			
+			//{/* {{{ ALL DRAW GOES HERE, FATTAR DU?! */
 			// Draw background
 			renderTexture(sBackground, renderer, 0, 0);
 			
 			//draw text
 			renderTexture(Message, renderer, 0, 0);
 			
+			//draw miner
 			oMiner.draw(renderer);
 			
+			//draw ground
 			oCreateGround.draw(renderer);
 			
 			//draw grid on top of everything, good for debugging
 			renderTexture(sGrid, renderer, 0, 0);
+			
+			//}/* }}} */
 			
 			//render texture
 			SDL_RenderPresent(renderer);

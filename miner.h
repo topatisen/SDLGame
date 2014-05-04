@@ -55,7 +55,7 @@ class cMiner /*THE ALMIGHTY MINER*/
 		float x, y,hspeed, vspeed;
 		SDL_Texture *sMiner;
 		cPoint oPoint[10];
-		bool atGoal, collision;
+		bool collision;
 		TTF_Font *fFont;
 		void create(SDL_Renderer *ren)
 		{
@@ -95,7 +95,7 @@ class cMiner /*THE ALMIGHTY MINER*/
 			
 			while(SDL_PollEvent(&e))//poll events, this also needs to be here to update properly
 			{
-				if(SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))//when mousebutton is pressed, set goal to mouse position
+				if(SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1))//when left mousebutton is pressed, set goal to mouse position
 				{
 					oPoint[pointnum].create(mouse_x,mouse_y,ren);
 					oPoint[pointnum].x = mouse_x;
@@ -142,38 +142,15 @@ class cMiner /*THE ALMIGHTY MINER*/
 			else
 			hspeed = 0;
 			
-			/*if(collision == true)
-			{
-				gravity = 0;
-				vspeed = 0;
-			}
-			else
-			{
-				gravity = 1;
-			}*/
-			
-			//Jump up and down!
-			if(y < 768-64)
-			{
-				gravity = 1;
-			}
-			else
-			{
-				gravity = 0;
-				
-				
-			}
 			////
 			
 		};
 		
 		void checkCollision(int otherx, int othery)
 		{
-			//New collision
 			//Top collision
 			if((y+64>othery&&x+46>otherx&&x<otherx+46&&y<othery))//
 			{
-				
 				if(oPoint[currentPoint].y < y-16)//if the goal is above;jump, otherwise; float smoooooooooooothly towards the goal
 				{
 					vspeed = -12;
@@ -183,92 +160,31 @@ class cMiner /*THE ALMIGHTY MINER*/
 					y = othery-68;
 					vspeed = 0;
 				}
-				
 			}
 			else
 			{
-
-					gravity = 1;
-				
+				gravity = 1;
 			}
 			//right 
 			if((x+48+hspeed > otherx&&x+44<otherx&&y+60>othery&&y<othery+48))	
-			{
-				
+			{	
 				x = otherx-48;
 				hspeed = 0;
 			}
 			//left
 			if((x+hspeed<otherx+48&&x>otherx+44&&y+60>othery&&y<othery+48))
-			{
-					
-					x = otherx+48;
-					hspeed = 0;
+			{		
+				x = otherx+48;
+				hspeed = 0;
 			}
 			//bottom (working) 
 			if((y<othery+50&&y>othery&&x+46>otherx&&x<otherx+46))
-			{
-				
+			{	
 				vspeed = 0;
 				gravity = 0;
 				y = othery+50;
 			}
-			//down
-			/*if(x+48>otherx&&x<otherx+48&&y+64>othery&&y<othery+64)
-			{
-				if(oPoint[currentPoint].y < y-16)//if the goal is above;jump, otherwise; float smoooooooooooothly towards the goal
-				{
-					vspeed = -12;
-				}
-				else
-				{
-					y = othery-68;
-					vspeed = 0;
-				}
-				gravity = 0;
-				collision = true;
-			}
-			//right
-			if(x+60>otherx&&x+56<otherx&&y>othery&&y<othery+32)
-			{
-				
-				hspeed = -hspeed;
-				x = otherx-60;
-				//vspeed = 0;
-				//gravity = 0;
-				collision = true;
-			}
-			//left
-			if(x<otherx+60&&x>otherx+56&&y>othery&&y<othery+32)
-			{
-				
-				hspeed = -hspeed;
-				x = otherx+60;
-				//vspeed = 0;
-				//gravity = 0;
-				collision = true;
-			}
-			/* Old collision
-			if(x+48>otherx&&x<otherx+48&&y+64>othery&&y<othery+64)
-			{
-				if(oPoint[currentPoint].y < y-16)//if the goal is above;jump, otherwise; float smoooooooooooothly towards the goal
-				{
-					vspeed = -12;
-				}
-				else
-				{
-					y = othery-64;
-					vspeed = 0;
-				}
-				gravity = 0;
-				collision = true;
-			}
-			else
-			{
-				gravity = 1;
-				collision = false;
-			}*/
-		}
+		};
 		
 		void draw(SDL_Renderer *ren)
 		{
