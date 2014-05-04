@@ -6,11 +6,9 @@ class cStepladder//simple ladder, "jumpthroughable"
 {
 	public:
 		int x,y, mouse_x, mouse_y;
-		SDL_Texture *sStepladder;
-	
+		
 		void create(SDL_Renderer *ren, int startx, int starty)
 		{
-			sStepladder = loadTexture("sStepladder.bmp",ren);
 			x = startx;
 			y = starty;
 		};
@@ -27,7 +25,7 @@ class cStepladder//simple ladder, "jumpthroughable"
 				}
 			}
 		};
-		void draw(SDL_Renderer *ren)
+		void draw(SDL_Renderer *ren,SDL_Texture *sStepladder)
 		{
 			renderTexture(sStepladder, ren, x+viewx, y+viewy);
 		};
@@ -69,12 +67,14 @@ class cCreateGround
 	cGround oGround[200];
 	SDL_Texture *sGround;
 	cStepladder oStepladder[100];
+	SDL_Texture *sStepladder;
 	int groundnum, laddernum, groundx, groundy, mouse_x, mouse_y;
 	bool clicked;
 	
 	void create(SDL_Renderer *ren)
 	{
 		sGround = loadTexture("sGround.bmp",ren);
+		sStepladder = loadTexture("sStepladder.bmp",ren);
 		clicked = false;
 		groundx = 0;
 		groundy = 384;
@@ -133,7 +133,7 @@ class cCreateGround
 		}
 		for(int i = 0;i<laddernum;i++)
 		{
-			oStepladder[i].draw(ren);
+			oStepladder[i].draw(ren,sStepladder);
 		}
 	}
 };

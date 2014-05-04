@@ -194,7 +194,7 @@ class cMiner /*THE ALMIGHTY MINER*/
 			//Top collision
 			if((y+64>othery&&x+46>otherx&&x<otherx+46&&y<othery))//
 			{
-				if((oPoint[currentPoint].y+64 < y)&&(pointnum > 1))//if the goal is above;jump, otherwise; float smoooooooooooothly towards the goal
+				if((oPoint[currentPoint].y+64 < y)&&(pointnum > 1)&&moveToGoal == true)//if the goal is above;jump, otherwise; float smoooooooooooothly towards the goal
 				{
 					goalBelow = false;
 					goalAbove = true;
@@ -251,7 +251,7 @@ class cMiner /*THE ALMIGHTY MINER*/
 			for(int i = 0;i<pointnum;i++)
 			{
 				//draw lines between points
-				/*if(pointnum > 1&&(oPoint[i+1].exists == true))
+				if(pointnum > 1&&(oPoint[i+1].exists == true)&&(selected == true))
 				{
 					//between points
 					SDL_RenderDrawLine(ren,oPoint[i].x+32, oPoint[i].y+32,oPoint[i+1].x+32,oPoint[i+1].y+32);
@@ -259,8 +259,8 @@ class cMiner /*THE ALMIGHTY MINER*/
 					SDL_RenderDrawLine(ren,oPoint[0].x+32, oPoint[0].y+32,oPoint[pointnum-1].x+32,oPoint[pointnum-1].y+32);
 				}
 				
-				*/
-				if(oPoint[i].exists == true)
+				
+				if(oPoint[i].exists == true&&selected == true)
 					oPoint[i].draw(ren,i,sPoint,sPointTaken);
 			}
 			if(selected == true)
