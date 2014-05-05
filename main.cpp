@@ -83,11 +83,11 @@ int main(int argc, char *argv[]) {
 	//}/* }}} */
 	
 	/* {{{ Make a "string", to make more, just do 1 new surface and  new texture, then free it */
-	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(fFont, "Testing testing", black);
+	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(fFont, "0 = selection 1 = make goals, 2 = place ladder", black);
 	SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 	SDL_FreeSurface(surfaceMessage);
 	
-	SDL_Surface* debugSurface = TTF_RenderText_Solid(fFont, "Testing testing", black);
+	SDL_Surface* debugSurface = TTF_RenderText_Solid(fFont, "Enter starts a miner", black);
 	SDL_Texture* debugMessage = SDL_CreateTextureFromSurface(renderer, debugSurface);
 	SDL_FreeSurface(debugSurface);
 	/* }}} */
