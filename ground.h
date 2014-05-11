@@ -18,7 +18,7 @@ class cStepladder//simple ladder, "jumpthroughable"
 			SDL_GetMouseState(&mouse_x,&mouse_y);
 			if(SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(3))//removed when clicking right button
 			{
-				if(mouse_x > x&&mouse_x < x+64&&mouse_y > y&&mouse_y < y+64)
+				if(mouse_x > x&&mouse_x < x+32&&mouse_y > y&&mouse_y < y+32)
 				{
 					x = 1000;
 					y = 1000;
@@ -48,7 +48,7 @@ class cGround
 			SDL_GetMouseState(&mouse_x,&mouse_y);
 			if(SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(3))
 			{
-				if(mouse_x > x&&mouse_x < x+64&&mouse_y > y&&mouse_y < y+64)
+				if(mouse_x > x&&mouse_x < x+32&&mouse_y > y&&mouse_y < y+32)
 				{
 					x = 1000;
 					y = 1000;
@@ -64,7 +64,7 @@ class cGround
 class cCreateGround
 {
 	public:
-	cGround oGround[200];
+	cGround oGround[1000];
 	SDL_Texture *sGround;
 	cStepladder oStepladder[100];
 	SDL_Texture *sStepladder;
@@ -90,8 +90,8 @@ class cCreateGround
 			if(clicked == false)
 			{
 				oStepladder[laddernum].create(ren,mouse_x, mouse_y);
-				oStepladder[laddernum].x = oStepladder[laddernum].x-oStepladder[laddernum].x%64;//snap
-				oStepladder[laddernum].y = oStepladder[laddernum].y-oStepladder[laddernum].y%64;//snap
+				oStepladder[laddernum].x = oStepladder[laddernum].x-oStepladder[laddernum].x%32;//snap
+				oStepladder[laddernum].y = oStepladder[laddernum].y-oStepladder[laddernum].y%32;//snap
 				laddernum ++;
 				clicked = true;
 			}
@@ -110,16 +110,16 @@ class cCreateGround
 		{
 			oGround[i].run();
 		}
-		if(groundnum < 199)
+		if(groundnum < 999)
 		{
 			oGround[groundnum].create(ren,groundx, groundy);
 			if(groundx < 1024)
 			{
-				groundx +=64;
+				groundx +=32;
 			}
 			else
 			{
-				groundy +=64;
+				groundy +=32;
 				groundx = 0;
 			}
 			groundnum ++;

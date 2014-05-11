@@ -83,7 +83,7 @@ int main(int argc, char *argv[]) {
 	//}/* }}} */
 	
 	/* {{{ Make a "string", to make more, just do 1 new surface and  new texture, then free it */
-	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(fFont, "0 = selection 1 = make goals, 2 = place ladder", black);
+	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(fFont, "0 = selection 1 = make goals, 2 = place ladder, g = show grid", black);
 	SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 	SDL_FreeSurface(surfaceMessage);
 	
@@ -120,6 +120,7 @@ int main(int argc, char *argv[]) {
 	char text[40];
 	int textInt = 0;
 	float avgFPS = 0;
+	bool showGrid = false;
 	/////////
 	
 	//mouse
@@ -173,6 +174,16 @@ int main(int argc, char *argv[]) {
 		}
 		if (state[SDL_SCANCODE_2]){
 			tool = 2;
+		}
+		
+		//show grid
+		if (state[SDL_SCANCODE_G])
+		{
+			showGrid = true;
+		}
+		else
+		{
+			showGrid = false;
 		}
 		//}/*}}}*/
 		
@@ -234,7 +245,8 @@ int main(int argc, char *argv[]) {
 			oCreateGround.draw(renderer);
 			
 			//draw grid on top of everything, good for debugging
-			renderTexture(sGrid, renderer, 0, 0);
+			if(showGrid == true)
+				renderTexture(sGrid, renderer, 0, 0);
 			
 			//draw text
 			renderTexture(Message, renderer, 0, 0);

@@ -112,7 +112,7 @@ class cMiner /*THE ALMIGHTY MINER*/
 				{
 					if(tool == 0&&clicked == false)//if the tool is 0, select the miner if the mouse is upon him! Huvaligen!
 					{
-						if(mouse_x > x&&mouse_x < x+64&&mouse_y > y&&mouse_y < y+64)
+						if(mouse_x > x&&mouse_x < x+32&&mouse_y > y&&mouse_y < y+32)
 						{
 							selected = true;
 							clicked = true;
@@ -129,8 +129,8 @@ class cMiner /*THE ALMIGHTY MINER*/
 						oPoint[pointnum].x = mouse_x;
 						oPoint[pointnum].y = mouse_y;
 						//round them up!
-						oPoint[pointnum].x = oPoint[pointnum].x-oPoint[pointnum].x%64;
-						oPoint[pointnum].y = oPoint[pointnum].y-oPoint[pointnum].y%64;
+						oPoint[pointnum].x = oPoint[pointnum].x-oPoint[pointnum].x%32;
+						oPoint[pointnum].y = oPoint[pointnum].y-oPoint[pointnum].y%32;
 						if(pointnum < 20)
 							pointnum ++;
 						else
@@ -192,19 +192,19 @@ class cMiner /*THE ALMIGHTY MINER*/
 		void checkCollision(int otherx, int othery)
 		{
 			//Top collision
-			if((y+64>othery&&x+46>otherx&&x<otherx+46&&y<othery))//
+			if((y+32>othery&&x+23>otherx&&x<otherx+23&&y<othery))//
 			{
-				if((oPoint[currentPoint].y+64 < y)&&(pointnum > 1)&&moveToGoal == true)//if the goal is above;jump, otherwise; float smoooooooooooothly towards the goal
+				if((oPoint[currentPoint].y+32 < y)&&(pointnum > 1)&&moveToGoal == true)//if the goal is above;jump, otherwise; float smoooooooooooothly towards the goal
 				{
 					goalBelow = false;
 					goalAbove = true;
-					vspeed = -12;
+					vspeed = -9;
 				}
 				else
 				{
 					goalAbove = false;
 					goalBelow = true;
-					y = othery-64;
+					y = othery-32;
 					vspeed = 0;
 				}
 			}
@@ -213,32 +213,32 @@ class cMiner /*THE ALMIGHTY MINER*/
 				gravity = 1;
 			}
 			//right 
-			if((x+48+hspeed > otherx&&x+44<otherx&&y+60>othery&&y<othery+48))	
+			if((x+24+hspeed > otherx&&x+22<otherx&&y+30>othery&&y<othery+24))	
 			{	
-				x = otherx-48;
+				x = otherx-24;
 				hspeed = 0;
 			}
 			//left
-			if((x+hspeed<otherx+48&&x>otherx+44&&y+60>othery&&y<othery+48))
+			if((x+hspeed<otherx+24&&x>otherx+22&&y+30>othery&&y<othery+24))
 			{		
-				x = otherx+48;
+				x = otherx+24;
 				hspeed = 0;
 			}
 			//bottom (working) 
-			if((y<othery+50&&y>othery&&x+46>otherx&&x<otherx+46))
+			if((y<othery+25&&y>othery&&x+23>otherx&&x<otherx+23))
 			{	
 				vspeed = 0;
 				gravity = 0;
-				y = othery+50;
+				y = othery+25;
 			}
 		};
 		
 		void checkLadder(int otherx, int othery)
 		{
 			//if goal is above, jump on them, otherwise jump through them
-			if((y>(othery+vspeed)&&x+46>otherx&&x<otherx+46&&y-50<(othery+vspeed))&&goalAbove == true)//
+			if((y>(othery+vspeed)&&x+23>otherx&&x<otherx+23&&y-25<(othery+vspeed))&&goalAbove == true)//
 			{
-				vspeed = -12;
+				vspeed = -6;
 			}
 			else
 			{
@@ -254,9 +254,9 @@ class cMiner /*THE ALMIGHTY MINER*/
 				if(pointnum > 1&&(oPoint[i+1].exists == true)&&(selected == true))
 				{
 					//between points
-					SDL_RenderDrawLine(ren,oPoint[i].x+32, oPoint[i].y+32,oPoint[i+1].x+32,oPoint[i+1].y+32);
+					SDL_RenderDrawLine(ren,oPoint[i].x+16, oPoint[i].y+16,oPoint[i+1].x+16,oPoint[i+1].y+16);
 					//betwwen last point and first point
-					SDL_RenderDrawLine(ren,oPoint[0].x+32, oPoint[0].y+32,oPoint[pointnum-1].x+32,oPoint[pointnum-1].y+32);
+					SDL_RenderDrawLine(ren,oPoint[0].x+16, oPoint[0].y+16,oPoint[pointnum-1].x+16,oPoint[pointnum-1].y+16);
 				}
 				
 				
@@ -265,7 +265,7 @@ class cMiner /*THE ALMIGHTY MINER*/
 			}
 			if(selected == true)
 			{
-				renderTexture(sSelected, ren, x, (y-64));
+				renderTexture(sSelected, ren, x, (y-32));
 			}
 			renderTexture(sMiner, ren, x, y);
 		};
