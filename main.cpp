@@ -23,6 +23,7 @@ int viewy = 0;
 //tool, just an integer
 //0 = nothing, selecting osv.
 //1 = goalmakerthinga'ma'jing
+//2 = ladder-bladder
 int tool = 0;
 
 using namespace std;
@@ -127,6 +128,9 @@ int main(int argc, char *argv[]) {
 	int mouse_x = 0;
 	int mouse_y = 0;
 	
+	//zooming?
+	//SDL_RenderSetScale(renderer,2,2);
+	
 	
 	//while running forever. Forever ever? Forever ever? FOREVER AND EVER AND EVER OSV.
 	while(!quit) {
@@ -185,6 +189,20 @@ int main(int argc, char *argv[]) {
 		{
 			showGrid = false;
 		}
+		
+		//direction for points
+		if (state[SDL_SCANCODE_KP_6]){/*right*/
+			globType = 0;
+		}
+		if (state[SDL_SCANCODE_KP_4]){/*left*/
+			globType = 1;
+		}
+		if (state[SDL_SCANCODE_KP_9]){/*upright*/
+			globType = 2;
+		}
+		if (state[SDL_SCANCODE_KP_7]){/*upleft*/
+			globType = 3;
+		}
 		//}/*}}}*/
 		
 		//miner run
@@ -197,7 +215,7 @@ int main(int argc, char *argv[]) {
 		{
 			for(int p = 0; p<5;p++)
 			{
-				oMiner[p].checkCollision(oCreateGround.oGround[i].x,oCreateGround.oGround[i].y);
+				oMiner[p].checkCollision(oCreateGround.oGround[i].x,oCreateGround.oGround[i].y,oCreateGround.oGround[i].exists);
 			}
 		}
 		//check ladders for miner
@@ -236,13 +254,14 @@ int main(int argc, char *argv[]) {
 			renderTexture(sBackground, renderer, 0, 0);
 			
 			//draw miner
+			
+			
+			//draw ground
+			oCreateGround.draw(renderer);
 			for(int i = 0; i<5;i++)
 			{
 				oMiner[i].draw(renderer);
 			}
-			
-			//draw ground
-			oCreateGround.draw(renderer);
 			
 			//draw grid on top of everything, good for debugging
 			if(showGrid == true)

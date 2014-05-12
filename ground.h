@@ -35,10 +35,11 @@ class cGround
 {
 	public:
 		int x,y, mouse_x, mouse_y;
-		
+		bool exists;
 	
 		void create(SDL_Renderer *ren, int startx, int starty)
 		{
+			exists = true;
 			x = startx;
 			y = starty;
 		};
@@ -50,14 +51,16 @@ class cGround
 			{
 				if(mouse_x > x&&mouse_x < x+32&&mouse_y > y&&mouse_y < y+32)
 				{
-					x = 1000;
-					y = 1000;
+					exists = false;
 				}
 			}
 		};
-		void draw(SDL_Renderer *ren, SDL_Texture *sGround)
+		void draw(SDL_Renderer *ren, SDL_Texture *sGround,SDL_Texture *sGroundBack)
 		{
+		if(exists == true)
 			renderTexture(sGround, ren, x+viewx, y+viewy);
+		if(exists == false)
+			renderTexture(sGroundBack, ren, x+viewx, y+viewy);
 		};
 };
 
@@ -66,6 +69,7 @@ class cCreateGround
 	public:
 	cGround oGround[1000];
 	SDL_Texture *sGround;
+	SDL_Texture *sGroundBack;
 	cStepladder oStepladder[100];
 	SDL_Texture *sStepladder;
 	int groundnum, laddernum, groundx, groundy, mouse_x, mouse_y;
@@ -74,6 +78,7 @@ class cCreateGround
 	void create(SDL_Renderer *ren)
 	{
 		sGround = loadTexture("sGround.bmp",ren);
+		sGroundBack = loadTexture("sGroundBack.bmp",ren);
 		sStepladder = loadTexture("sStepladder.bmp",ren);
 		clicked = false;
 		groundx = 0;
@@ -113,6 +118,7 @@ class cCreateGround
 		if(groundnum < 999)
 		{
 			oGround[groundnum].create(ren,groundx, groundy);
+			//oGround[groundnum].exists = true;
 			if(groundx < 1024)
 			{
 				groundx +=32;
@@ -129,7 +135,7 @@ class cCreateGround
 	{
 		for(int i = 0;i<groundnum;i++)
 		{
-			oGround[i].draw(ren,sGround);
+			oGround[i].draw(ren,sGround,sGroundBack);
 		}
 		for(int i = 0;i<laddernum;i++)
 		{

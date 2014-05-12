@@ -2,10 +2,12 @@
 #ifndef MINER_H
 #define MINER_H
 
+int globType = 0;
+
 class cPoint /*The points that will be used as an array for the miner, easier to make as a class to be more flexible osv.*/
 {
 	public:
-		int x,y;
+		int x,y, type/*0 = right, 1 = left, 2 = upright, 3 = upleft*/;
 		bool exists, taken;
 		char text[40];
 		
@@ -13,9 +15,9 @@ class cPoint /*The points that will be used as an array for the miner, easier to
 		//SDL_Texture* Message;
 		SDL_Color black;
 		TTF_Font *font;
-	void create(int mouse_x, int mouse_y, SDL_Renderer *ren)
+	void create(int mouse_x, int mouse_y, SDL_Renderer *ren,int pointType)
 	{	
-		
+		type = pointType;
 		x = mouse_x;
 		y = mouse_y;
 		//number test
@@ -28,7 +30,8 @@ class cPoint /*The points that will be used as an array for the miner, easier to
 		taken = false;
 		exists = true;//to be drawn or not to be drawn, that is the question
 	}
-	void draw(SDL_Renderer *ren, int idNumber, SDL_Texture *sPoint,SDL_Texture *sPointTaken)
+	void draw(SDL_Renderer *ren, int idNumber, SDL_Texture *sPoint0, SDL_Texture *sPoint1, SDL_Texture *sPoint2
+	, SDL_Texture *sPoint3, SDL_Texture *sPointTaken)
 	{
 		//numbertest
 		/*sprintf(text,"%d",idNumber);
@@ -36,10 +39,17 @@ class cPoint /*The points that will be used as an array for the miner, easier to
 		Message = SDL_CreateTextureFromSurface(ren, surfaceMessage);
 		SDL_FreeSurface(surfaceMessage);*/
 	
-		if(taken == false)
-			renderTexture(sPoint, ren, x, y);
-		else
-			renderTexture(sPointTaken, ren, x, y);
+		//if(taken == false)
+		if(type == 0)
+			renderTexture(sPoint0, ren, x, y);
+		if(type == 1)
+			renderTexture(sPoint1, ren, x, y);
+		if(type == 2)
+			renderTexture(sPoint2, ren, x, y);
+		if(type == 3)
+			renderTexture(sPoint3, ren, x, y);
+		//else
+			//renderTexture(sPointTaken, ren, x, y);
 			
 		//renderTexture(Message, ren, x+24, y+8);
 	};
@@ -48,14 +58,20 @@ class cPoint /*The points that will be used as an array for the miner, easier to
 class cMiner /*THE ALMIGHTY MINER*/
 {
 	public:
-		int  gravity, mouse_x,mouse_y, goalx, goaly;
-		int pointnum, currentPoint;
-		float x, y,hspeed, vspeed, dx, dy;
-		SDL_Texture *sMiner;
-		SDL_Texture *sSelected;
+		int  mouse_x,mouse_y, goalx, goaly, mode/*same as cPoint::type*/;
+		int pointnum, currentPoint, animNum, animSpeed;
+		float x, y,hspeed, vspeed, dx, dy,gravity;
 		
+		//only for testing, will be in loader later
+		SDL_Texture *sMiner;
+		
+		SDL_Texture *sSelected;
 		//points
-		SDL_Texture *sPoint;
+		SDL_Texture *sPoint0;
+		SDL_Texture *sPoint1;
+		SDL_Texture *sPoint2;
+		SDL_Texture *sPoint3;
+		
 		SDL_Texture *sPointTaken;
 		
 		cPoint oPoint[20];
@@ -63,21 +79,24 @@ class cMiner /*THE ALMIGHTY MINER*/
 		TTF_Font *fFont;
 		void create(SDL_Renderer *ren)
 		{
+			x = 1024/2;
+			y = 0;
 			pointnum = 0;
 			currentPoint = 1;
-			
-			//text test
+			mode = 0;
 			fFont = TTF_OpenFont("font.ttf", 24);
 			
 			sMiner = loadTexture("sMiner.bmp",ren);
+			
 			sSelected = loadTexture("sSelected.bmp",ren);
 			
 			//points
-			sPoint = loadTexture("sGoal.bmp", ren);
+			sPoint0 = loadTexture("sPointRight.bmp", ren);
+			sPoint1 = loadTexture("sPointLeft.bmp", ren);
+			sPoint2 = loadTexture("sPointUpRight.bmp", ren);
+			sPoint3 = loadTexture("sPointUpLeft.bmp", ren);
 			sPointTaken = loadTexture("sGoalTaken.bmp", ren);
 			
-			x = 1024/2;
-			y = 0;
 			goalx = x;
 			goaly = y;
 			vspeed = 0;
@@ -90,6 +109,24 @@ class cMiner /*THE ALMIGHTY MINER*/
 			clicked = false;
 		};
 		
+		void checkGoal(float otherx, float othery,int type)
+		{
+			dx = (otherx+32)-(x+32);
+			dy = (othery+32)-(y+32);
+			if(((dx*dx)+(dy*dy))<(16*32))
+			{
+				if(type == 0)
+					mode = 1;
+				if(type == 1)
+					mode = 2;
+				if(type == 2)
+					mode = 3;
+				if(type == 3)
+					mode = 4;
+			}
+			
+		};
+		
 		void run(SDL_Event e, SDL_Renderer *ren)
 		{
 			//physics-shizzle
@@ -98,8 +135,8 @@ class cMiner /*THE ALMIGHTY MINER*/
 			vspeed += gravity;
 			///
 			//limit hspeed
-			if(hspeed > 3) hspeed = 3;
-			if(hspeed < -3) hspeed = -3;
+			if(hspeed > 2) hspeed = 2;
+			if(hspeed < -2) hspeed = -2;
 			
 			
 			//mousey mousey, you are so lousey
@@ -125,7 +162,7 @@ class cMiner /*THE ALMIGHTY MINER*/
 					}
 					if(tool == 1&&selected == true&&clicked == false)//if the tool is "goalmaker(1)", make goals
 					{
-						oPoint[pointnum].create(mouse_x,mouse_y,ren);
+						oPoint[pointnum].create(mouse_x,mouse_y,ren, globType);
 						oPoint[pointnum].x = mouse_x;
 						oPoint[pointnum].y = mouse_y;
 						//round them up!
@@ -144,88 +181,58 @@ class cMiner /*THE ALMIGHTY MINER*/
 				{
 					clicked = false;
 				}
-			
-			
-			//move to next goal if "inside" the goal/point (circle-collision, faster and doesn't need to be that precise)
-			dx = (oPoint[currentPoint].x+32)-(x+32);
-			dy = (oPoint[currentPoint].y+32)-(y+32);
-			if(((dx*dx)+(dy*dy))<(16*32))
-			{
-				//resets both of the goal-bools, will make workaround later
-				goalBelow = false;
-				goalAbove = false;
-				
-				oPoint[currentPoint].taken = true;
-				if(currentPoint < pointnum-1)
-				{
-					currentPoint ++;
-				}
-				else
-				{
-					for(int i = 0;i<pointnum;i++)
-					{
-						oPoint[i].taken = false;
-					}
-					currentPoint = 0;
-				}
-			}
-			if(pointnum > 1&&moveToGoal == true)
-			{
-				if(x < oPoint[currentPoint].x)//move towards goal
-				{
-					hspeed +=0.2;
-				}
-				else// --||--
-				{
-					hspeed -=0.2;
-				}
-			}
-			else
-			{
+			if(mode == 0)
 				hspeed = 0;
-			}
+			if(mode == 1)
+				hspeed +=0.2;
+			if(mode == 2)
+				hspeed -=0.2;
+			if(mode == 3)
+				hspeed +=0.2;
+			if(mode == 4)
+				hspeed -=0.2;
 			
+			for(int i = 0;i<pointnum;i++)
+			{
+				checkGoal(oPoint[i].x,oPoint[i].y,oPoint[i].type);
+			}
 			////
 			
 		};
 		
-		void checkCollision(int otherx, int othery)
+		void checkCollision(int otherx, int othery,bool exists)
 		{
 			//Top collision
-			if((y+32>othery&&x+23>otherx&&x<otherx+23&&y<othery))//
+			if((y+32>othery&&x+23>otherx&&x<otherx+23&&y<othery)&&(exists == true))//
 			{
-				if((oPoint[currentPoint].y+32 < y)&&(pointnum > 1)&&moveToGoal == true)//if the goal is above;jump, otherwise; float smoooooooooooothly towards the goal
-				{
-					goalBelow = false;
-					goalAbove = true;
-					vspeed = -9;
-				}
-				else
-				{
+				
 					goalAbove = false;
 					goalBelow = true;
 					y = othery-32;
-					vspeed = 0;
-				}
+					if(mode == 3||mode == 4)
+						vspeed = -6;
+					else
+						vspeed = 0;
+				
 			}
 			else
 			{
-				gravity = 1;
+				gravity = 0.5;
 			}
 			//right 
-			if((x+24+hspeed > otherx&&x+22<otherx&&y+30>othery&&y<othery+24))	
+			if((x+24+hspeed > otherx&&x+22<otherx&&y+30>othery&&y<othery+24)&&exists == true)	
 			{	
 				x = otherx-24;
 				hspeed = 0;
 			}
 			//left
-			if((x+hspeed<otherx+24&&x>otherx+22&&y+30>othery&&y<othery+24))
+			if((x+hspeed<otherx+24&&x>otherx+22&&y+30>othery&&y<othery+24)&&exists == true)
 			{		
 				x = otherx+24;
 				hspeed = 0;
 			}
 			//bottom (working) 
-			if((y<othery+25&&y>othery&&x+23>otherx&&x<otherx+23))
+			if((y<othery+25&&y>othery&&x+23>otherx&&x<otherx+23)&&exists == true)
 			{	
 				vspeed = 0;
 				gravity = 0;
@@ -243,7 +250,7 @@ class cMiner /*THE ALMIGHTY MINER*/
 			else
 			{
 				//vspeed = 4;
-				gravity = 1;
+				gravity = 0.5;
 			}
 		};
 		void draw(SDL_Renderer *ren)
@@ -255,19 +262,22 @@ class cMiner /*THE ALMIGHTY MINER*/
 				{
 					//between points
 					SDL_RenderDrawLine(ren,oPoint[i].x+16, oPoint[i].y+16,oPoint[i+1].x+16,oPoint[i+1].y+16);
+					SDL_RenderDrawLine(ren,oPoint[i].x+17, oPoint[i].y+16,oPoint[i+1].x+17,oPoint[i+1].y+16);
+					SDL_RenderDrawLine(ren,oPoint[i].x+16, oPoint[i].y+17,oPoint[i+1].x+16,oPoint[i+1].y+17);
+					SDL_RenderDrawLine(ren,oPoint[i].x+17, oPoint[i].y+17,oPoint[i+1].x+17,oPoint[i+1].y+17);
 					//betwwen last point and first point
 					SDL_RenderDrawLine(ren,oPoint[0].x+16, oPoint[0].y+16,oPoint[pointnum-1].x+16,oPoint[pointnum-1].y+16);
 				}
 				
 				
 				if(oPoint[i].exists == true&&selected == true)
-					oPoint[i].draw(ren,i,sPoint,sPointTaken);
+					oPoint[i].draw(ren,i,sPoint0,sPoint1,sPoint2,sPoint3,sPoint0);
 			}
 			if(selected == true)
 			{
 				renderTexture(sSelected, ren, x, (y-32));
 			}
-			renderTexture(sMiner, ren, x, y);
+				renderTexture(sMiner, ren, x, y);
 		};
 
 };
