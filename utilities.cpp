@@ -39,3 +39,13 @@ void renderTexture(SDL_Texture *tex, SDL_Renderer *ren, int x, int y) {
 	SDL_RenderCopy(ren, tex, NULL, &dst);
 }
 /*}}}*/
+
+/*{{{ createTextMessag: Creates a surface with text */
+SDL_Texture *createTextMessage(TTF_Font *font, SDL_Color color, const char *message, SDL_Renderer *ren)
+{
+    SDL_Surface *surfaceMessage = TTF_RenderText_Solid(font, message, color);
+    SDL_Texture *outMessage = SDL_CreateTextureFromSurface(ren, surfaceMessage);
+    SDL_FreeSurface(surfaceMessage);
+    return outMessage;
+}
+/*}}}*/
