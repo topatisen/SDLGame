@@ -83,6 +83,7 @@ int main(int argc, char *argv[]) {
 	SDL_Color black = {0, 0, 0};
 	//}/* }}} */
 	
+	SDL_Texture* newMessage = createTextMessage(fFont, black, "Look how nice it is to have a function that does two lines of code for you", renderer);
 	/* {{{ Make a "string", to make more, just do 1 new surface and  new texture, then free it */
 	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(fFont, "0 = selection 1 = make goals, 2 = place ladder, g = show grid", black);
 	SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
@@ -269,6 +270,7 @@ int main(int argc, char *argv[]) {
 			
 			//draw text
 			renderTexture(Message, renderer, 0, 0);
+			renderTexture(newMessage, renderer, 100, 100);
 			renderTexture(debugMessage, renderer, 0, 32);
 			//}/* }}} */
 			
